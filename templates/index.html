@@ -1,29 +1,42 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>MindMate AI</title>
-    <style>
-        body { font-family: Arial; background: #eef2f3; padding: 30px; }
-        .container { max-width: 600px; margin: auto; background: white; padding: 20px; border-radius: 10px; }
-        input[type=text] { width: 80%; padding: 10px; }
-        input[type=submit] { padding: 10px 20px; }
-        .msg { margin-top: 20px; }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>MindMate AI</title>
+  <link rel="stylesheet" href="/static/style.css" />
 </head>
 <body>
-    <div class="container">
-        <h2>💬 MindMate AI</h2>
-        <form method="POST" action="/ask">
-            <input type="text" name="message" placeholder="How are you feeling today?" required>
-            <input type="submit" value="Ask">
-        </form>
+  <div class="container">
+    <h1>🧠 MindMate AI</h1>
+    <div class="chat-box" id="chat-box"></div>
+    <form id="chat-form">
+      <input type="text" id="message" placeholder="How are you feeling today?" required />
+      <button type="submit">Send</button>
+    </form>
+  </div>
 
-        {% if user_message %}
-        <div class="msg">
-            <strong>You:</strong> {{ user_message }}<br>
-            <strong>MindMate AI:</strong> {{ bot_message }}
-        </div>
-        {% endif %}
-    </div>
+  <script>
+    const form = document.getElementById("chat-form");
+    const chatBox = document.getElementById("chat-box");
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const input = document.getElementById("message");
+      const msg = input.value;
+      chatBox.innerHTML += `<div class="user-msg"><b>You:</b> ${msg}</div>`;
+      input.value = "";
+
+      const res = await fetch("/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message: msg })
+      });
+
+      const data = await res.json();
+      chatBox.innerHTML += `<div class="bot-msg"><b>MindMate:</b> ${data.reply}</div>`;
+      chatBox.scrollTop = chatBox.scrollHeight;
+    });
+  </script>
 </body>
 </html>
