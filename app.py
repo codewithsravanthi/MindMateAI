@@ -3,7 +3,6 @@ import openai
 from flask import Flask, request, jsonify, render_template
 
 app = Flask(__name__)
-
 openai.api_key = os.getenv("OPENAI_API_KEY")
 
 @app.route("/")
@@ -14,7 +13,7 @@ def index():
 def chat():
     user_input = request.json.get("message")
     if not user_input:
-        return jsonify({"response": "Please enter a message."}), 400
+        return jsonify({"reply": "Please enter a message."}), 400
 
     try:
         response = openai.ChatCompletion.create(
@@ -25,10 +24,9 @@ def chat():
             ]
         )
         reply = response['choices'][0]['message']['content'].strip()
-        return jsonify({"response": reply})  
-
+        return jsonify({"reply": reply})  
     except Exception as e:
-        return jsonify({"response": f"Error: {str(e)}"}), 500
+        return jsonify({"reply": f"Error: {str(e)}"}), 500
 
 if __name__ == "__main__":
     app.run(debug=True)
