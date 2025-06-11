@@ -24,9 +24,9 @@ def chat():
             ]
         )
         reply = response['choices'][0]['message']['content'].strip()
-        return jsonify({"reply": reply})  
+        return jsonify({"reply": reply})
     except Exception as e:
         return jsonify({"reply": f"Error: {str(e)}"}), 500
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run()
